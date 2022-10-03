@@ -15,7 +15,7 @@ type UsePasswordEntryOpts =
   | UsePasswordEntryBasicOpts
   | UsePasswordEntryVerboseOpts;
 
-type UsePasswordEntry = {
+export type UsePasswordEntry = {
   password: string;
   passwordConfirmation: PasswordValidation;
   setPassword: (value: string) => void;
