@@ -53,18 +53,17 @@ function isUppercase(char: string): boolean {
 }
 
 export enum PasswordValidationCondition {
-  Digit,
-  SpecialChar,
-  Lowercase,
-  Uppercase,
-  Length,
+  Digit = "DIGIT",
+  SpecialChar = "SPECIAL_CHAR",
+  Lowercase = "LOWER_CASE",
+  Uppercase = "UPPER_CASE",
+  Length = "LENGTH",
 }
 
-type ValidatePasswordResult =
-  | {
-      isValid: true;
-    }
-  | { isValid: false; errors: PasswordValidationCondition[] };
+type ValidatePasswordResult = {
+  isValid: boolean;
+  errors?: PasswordValidationCondition[];
+};
 
 export function validatePassword(password: string): ValidatePasswordResult {
   let hasDigit = false;
