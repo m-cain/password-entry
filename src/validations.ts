@@ -122,3 +122,132 @@ export function validatePasswordConfirmation(
 ): boolean {
   return password === confirmation;
 }
+
+if (import.meta.vitest) {
+  const digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  // requirements: !@#$%^&*()_-+={[}]|:;"'<,>.
+  const specialChars = [
+    "!",
+    "@",
+    "#",
+    "$",
+    "%",
+    "^",
+    "&",
+    "*",
+    "(",
+    ")",
+    "-",
+    "_",
+    "+",
+    "=",
+    "[",
+    "{",
+    "]",
+    "}",
+    "|",
+    ";",
+    ":",
+    "'",
+    '"',
+    "<",
+    ",",
+    ">",
+    ".",
+  ];
+  const lowercase = [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+  ];
+  const uppercase = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+  ];
+
+  test.each(digits)("isDigit(%s) should return true for digits", (digit) => {
+    expect(isDigit(digit)).toBe(true);
+  });
+
+  test.each([...lowercase, ...uppercase, ...specialChars])(
+    "isDigit(%s) should return false for non-digits",
+    (digit) => {
+      expect(isDigit(digit + "a")).toBe(false);
+    }
+  );
+
+  test.each(specialChars)(
+    'isSpecialChar("%s") should return true for special chars',
+    (char) => {
+      expect(isSpecialChar(char)).toBe(true);
+    }
+  );
+
+  test.each([...lowercase, ...uppercase, ...digits])(
+    'isSpecialChar("%s") should return false for non-special chars',
+    (char) => {
+      expect(isSpecialChar(char)).toBe(false);
+    }
+  );
+
+  test.each(lowercase)(
+    'isLowercase("%s") should return true for lowercase',
+    (char) => {
+      expect(isLowercase(char)).toBe(true);
+    }
+  );
+
+  test.each([...uppercase, ...digits, ...specialChars])(
+    'isLowercase("%s") should return false for non-lowercase',
+    (char) => {
+      expect(isLowercase(char)).toBe(false);
+    }
+  );
+
+  test.each(uppercase)(
+    'isUppercase("%s") should return true for uppercase',
+    (char) => {
+      expect(isUppercase(char)).toBe(true);
+    }
+  );
+
+  test.each([...lowercase, ...digits, ...specialChars])(
+    'isUppercase("%s") should return false for non-uppercase',
+    (char) => {
+      expect(isUppercase(char)).toBe(false);
+    }
+  );
+}
