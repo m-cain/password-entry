@@ -24,6 +24,7 @@ describe("validatePasswordConfirmation", () => {
   });
 });
 
+// note: in the case invalid length, we don't care about the other conditions.
 describe("validatePassword", () => {
   // TODO: these cases can be made more exhaustive or constructed generatively. Enumeration below is mostly for demonstration.
   const validCases = ["Password1!", "passWordlonger2@", "&pASSWORD1"];
@@ -42,7 +43,7 @@ describe("validatePassword", () => {
   const invalidUpperAndLengthCases = ["p#2"];
   const invalidUpperAndLowerCases = ["1234%^"];
   const invalidUpperAndSpecialCases = ["password1"];
-  const invalidLowAndLengthCases = ["PA1@"];
+  const invalidLowerAndLengthCases = ["PA1@"];
   const invalidUpperAndLowerAndSpecialCases = ["1234567"];
   const invalidUpperAndLowerAndDigitCases = ["#%&*$@"];
   const invalidUpperAndLowerAndLengthCases = ["2$"];
@@ -53,56 +54,271 @@ describe("validatePassword", () => {
     'validatePassword("%s") should return true for valid passwords',
     (pw) => {
       expect(validatePassword(pw).isValid).toBe(true);
-      expect(validatePassword(pw).errors).toBeUndefined();
+      expect(validatePassword(pw).validations).toBeUndefined();
     }
   );
 
   test.each(invalidDigitCases)(
-    'validatePassword("%s") should return false with invalid digit errors',
+    'validatePassword("%s") should return false with invalid digit validations',
     (pw) => {
       expect(validatePassword(pw)).toEqual({
         isValid: false,
-        errors: [PasswordValidationCondition.Digit],
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Digit,
+        ]),
       });
     }
   );
 
   test.each(invalidLowerCases)(
-    'validatePassword("%s") should return false with invalid lowercase errors',
+    'validatePassword("%s") should return false with invalid lowercase validations',
     (pw) => {
       expect(validatePassword(pw)).toEqual({
         isValid: false,
-        errors: [PasswordValidationCondition.Lowercase],
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Lowercase,
+        ]),
       });
     }
   );
 
   test.each(invalidUpperCases)(
-    'validatePassword("%s") should return false with invalid uppercase errors',
+    'validatePassword("%s") should return false with invalid uppercase validations',
     (pw) => {
       expect(validatePassword(pw)).toEqual({
         isValid: false,
-        errors: [PasswordValidationCondition.Uppercase],
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Uppercase,
+        ]),
       });
     }
   );
 
   test.each(invalidLengthCases)(
-    'validatePassword("%s") should return false with invalid length errors',
+    'validatePassword("%s") should return false with invalid length validations',
     (pw) => {
       expect(validatePassword(pw)).toEqual({
         isValid: false,
-        errors: [PasswordValidationCondition.Length],
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Length,
+        ]),
       });
     }
   );
 
   test.each(invalidSpecialCharCases)(
-    'validatePassword("%s") should return false with invalid special char errors',
+    'validatePassword("%s") should return false with invalid special char validations',
     (pw) => {
       expect(validatePassword(pw)).toEqual({
         isValid: false,
-        errors: [PasswordValidationCondition.SpecialChar],
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.SpecialChar,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidDigitAndLengthCases)(
+    'validatePassword("%s") should return false with invalid digit and length validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Length,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidDigitAndLowerCases)(
+    'validatePassword("%s") should return false with invalid digit and lowercase validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Digit,
+          PasswordValidationCondition.Lowercase,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidDigitAndUpperCases)(
+    'validatePassword("%s") should return false with invalid digit and uppercase validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Digit,
+          PasswordValidationCondition.Uppercase,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidDigitAndSpecialCases)(
+    'validatePassword("%s") should return false with invalid digit and special char validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Digit,
+          PasswordValidationCondition.SpecialChar,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidSpecialAndLengthCases)(
+    'validatePassword("%s") should return false with invalid special char and length validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Length,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidSpecialAndLowerCases)(
+    'validatePassword("%s") should return false with invalid special char and lowercase validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.SpecialChar,
+          PasswordValidationCondition.Lowercase,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidSpecialAndUpperCases)(
+    'validatePassword("%s") should return false with invalid special char and uppercase validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.SpecialChar,
+          PasswordValidationCondition.Uppercase,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidUpperAndLengthCases)(
+    'validatePassword("%s") should return false with invalid uppercase and length validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Length,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidUpperAndLowerCases)(
+    'validatePassword("%s") should return false with invalid uppercase and lowercase validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Uppercase,
+          PasswordValidationCondition.Lowercase,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidUpperAndSpecialCases)(
+    'validatePassword("%s") should return false with invalid uppercase and special char validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Uppercase,
+          PasswordValidationCondition.SpecialChar,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidLowerAndLengthCases)(
+    'validatePassword("%s") should return false with invalid lowercase and length validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Length,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidUpperAndLowerAndSpecialCases)(
+    'validatePassword("%s") should return false with invalid uppercase, lowercase and special char validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Uppercase,
+          PasswordValidationCondition.Lowercase,
+          PasswordValidationCondition.SpecialChar,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidUpperAndLowerAndLengthCases)(
+    'validatePassword("%s") should return false with invalid uppercase, lowercase and length validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Length,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidUpperAndLowerAndDigitCases)(
+    'validatePassword("%s") should return false with invalid uppercase, lowercase and digit validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Uppercase,
+          PasswordValidationCondition.Lowercase,
+          PasswordValidationCondition.Digit,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidSpecialAndLowerAndDigitCases)(
+    'validatePassword("%s") should return false with invalid special char, lowercase and digit validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.SpecialChar,
+          PasswordValidationCondition.Lowercase,
+          PasswordValidationCondition.Digit,
+        ]),
+      });
+    }
+  );
+
+  test.each(invalidSpecialAndLengthAndDigitCases)(
+    'validatePassword("%s") should return false with invalid special char, length and digit validations',
+    (pw) => {
+      expect(validatePassword(pw)).toEqual({
+        isValid: false,
+        validations: expect.arrayContaining([
+          PasswordValidationCondition.Length,
+        ]),
       });
     }
   );

@@ -1,9 +1,21 @@
+function throwIfNotChar(input: string) {
+  if (input.length !== 1) {
+    throw new Error("Expected a single character");
+  }
+}
+
+/**
+ *
+ * @param char
+ * @returns
+ */
 function isDigit(char: string): boolean {
+  throwIfNotChar(char);
   return char >= "0" && char <= "9";
 }
 
 /**
- * Required characters:
+ * Allowed special characters:
  * ! => 33
  * @ => 64
  * # => 35
@@ -35,6 +47,7 @@ function isDigit(char: string): boolean {
  * @returns
  */
 function isSpecialChar(char: string): boolean {
+  throwIfNotChar(char);
   const code = char.charCodeAt(0);
   return (
     (code >= 33 && code <= 47) ||
@@ -45,10 +58,12 @@ function isSpecialChar(char: string): boolean {
 }
 
 function isLowercase(char: string): boolean {
+  throwIfNotChar(char);
   return char >= "a" && char <= "z";
 }
 
 function isUppercase(char: string): boolean {
+  throwIfNotChar(char);
   return char >= "A" && char <= "Z";
 }
 
@@ -62,7 +77,7 @@ export enum PasswordValidationCondition {
 
 type ValidatePasswordResult = {
   isValid: boolean;
-  errors?: PasswordValidationCondition[];
+  validations?: PasswordValidationCondition[];
 };
 
 export function validatePassword(password: string): ValidatePasswordResult {
@@ -74,7 +89,7 @@ export function validatePassword(password: string): ValidatePasswordResult {
   if (password.length < 6) {
     return {
       isValid: false,
-      errors: [PasswordValidationCondition.Length],
+      validations: [PasswordValidationCondition.Length],
     };
   }
 
@@ -112,7 +127,7 @@ export function validatePassword(password: string): ValidatePasswordResult {
     errors.push(PasswordValidationCondition.Uppercase);
   }
 
-  return { isValid: false, errors };
+  return { isValid: false, validations: errors };
 }
 
 export function validatePasswordConfirmation(
@@ -167,6 +182,20 @@ if (import.meta.vitest) {
     "j",
     "k",
     "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
   ];
   const uppercase = [
     "A",
@@ -197,14 +226,19 @@ if (import.meta.vitest) {
     "Z",
   ];
 
+  test("isDigit should throw an error if the input is not a single character", () => {
+    expect(() => isDigit("")).toThrowError();
+    expect(() => isDigit("12")).toThrowError();
+  });
+
   test.each(digits)("isDigit(%s) should return true for digits", (digit) => {
     expect(isDigit(digit)).toBe(true);
   });
 
   test.each([...lowercase, ...uppercase, ...specialChars])(
     "isDigit(%s) should return false for non-digits",
-    (digit) => {
-      expect(isDigit(digit + "a")).toBe(false);
+    (char) => {
+      expect(isDigit(char)).toBe(false);
     }
   );
 

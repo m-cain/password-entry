@@ -1,36 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-type PasswordValidation = {};
-
-type UsePasswordEntryBasicOpts = {
-  inputDebounceMs?: number;
-};
-
-type UsePasswordEntryVerboseOpts = {
-  passwordInputDebounceMs?: number;
-  confirmationInputDebounceMs?: number;
-};
-
-type UsePasswordEntryOpts =
-  | UsePasswordEntryBasicOpts
-  | UsePasswordEntryVerboseOpts;
+import { useCallback, useState } from "react";
+import { PasswordValidationCondition, validatePassword } from "./validations";
 
 export type UsePasswordEntry = {
   password: string;
-  passwordConfirmation: PasswordValidation;
+  passwordConfirmation: string;
   setPassword: (value: string) => void;
   setPasswordConfirmation: (value: string) => void;
-  isValid: boolean;
   isConfirmed: boolean;
-  validations: PasswordValidation[];
+  validations: PasswordValidationCondition[];
+  validate: () => void;
+  isValid: boolean;
 };
 
-export function usePasswordEntry(opts: UsePasswordEntryOpts): UsePasswordEntry {
+export function usePasswordEntry(): UsePasswordEntry {
   const [value, setValue] = useState("");
   const [confirmValue, setConfirmValue] = useState("");
-
-  // validate on value change -- todo: debounce the input change
-  useEffect(() => {}, [value]);
+  const [isValid, setIsValid] = useState(false);
+  const [validations, setValidations] = useState<PasswordValidationCondition[]>(
+    []
+  );
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   const setPassword = useCallback((value: string) => {
     setValue(value);
@@ -40,17 +29,22 @@ export function usePasswordEntry(opts: UsePasswordEntryOpts): UsePasswordEntry {
     setConfirmValue(value);
   }, []);
 
-  const isValid = useMemo(() => false, []);
+  const validate = useCallback(() => {
+    const { isValid, validations } = validatePassword(value);
+    setIsValid(isValid);
+    setValidations(validations ?? []);
 
-  const isConfirmed = false;
+    setIsConfirmed(value === confirmValue);
+  }, [value, confirmValue]);
 
   return {
     password: value,
     passwordConfirmation: confirmValue,
     setPassword,
     setPasswordConfirmation,
-    isValid,
-    validations: [],
+    validations,
     isConfirmed,
+    validate,
+    isValid,
   };
 }
