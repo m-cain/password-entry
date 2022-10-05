@@ -85,13 +85,7 @@ export function validatePassword(password: string): ValidatePasswordResult {
   let hasSpecialChar = false;
   let hasUppercase = false;
   let hasLowercase = false;
-
-  if (password.length < 6) {
-    return {
-      isValid: false,
-      validations: [PasswordValidationCondition.Length],
-    };
-  }
+  const hasMinLength = password.length >= 6;
 
   for (const c of password) {
     if (isDigit(c)) {
@@ -105,7 +99,13 @@ export function validatePassword(password: string): ValidatePasswordResult {
     }
   }
 
-  if (hasDigit && hasSpecialChar && hasLowercase && hasUppercase) {
+  if (
+    hasDigit &&
+    hasSpecialChar &&
+    hasLowercase &&
+    hasUppercase &&
+    hasMinLength
+  ) {
     return { isValid: true };
   }
 
@@ -125,6 +125,10 @@ export function validatePassword(password: string): ValidatePasswordResult {
 
   if (!hasUppercase) {
     errors.push(PasswordValidationCondition.Uppercase);
+  }
+
+  if (!hasMinLength) {
+    errors.push(PasswordValidationCondition.Length);
   }
 
   return { isValid: false, validations: errors };
