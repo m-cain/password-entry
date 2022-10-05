@@ -17,6 +17,6 @@
     "jsx": "react-jsx",
     "types": ["vitest/globals", "vitest/importMeta"]
   },
-  "include": ["src", "bin"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
