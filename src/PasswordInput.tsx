@@ -14,9 +14,9 @@ export default function PasswordInput(inputProps: Props) {
 
   const { password, setPassword } = usePasswordEntry;
 
-  const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.currentTarget.value);
-  }, []);
+  };
 
   return (
     <input

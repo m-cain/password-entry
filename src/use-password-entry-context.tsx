@@ -6,12 +6,13 @@ const PasswordEntryContext = React.createContext<UsePasswordEntry | null>(null);
 export const usePasswordEntryContext = () =>
   React.useContext(PasswordEntryContext);
 
-export function PasswordEntryProvider({
-  children,
-  ...props
-}: React.PropsWithChildren<UsePasswordEntry>) {
+export function PasswordEntryProvider(
+  props: React.PropsWithChildren<UsePasswordEntry>
+) {
+  const { children, ...data } = props;
+
   return (
-    <PasswordEntryContext.Provider value={props}>
+    <PasswordEntryContext.Provider value={data}>
       {children}
     </PasswordEntryContext.Provider>
   );

@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback } from "react";
+import { ChangeEvent } from "react";
 import { usePasswordEntryContext } from "./use-password-entry-context";
 
 type Props = React.InputHTMLAttributes<HTMLInputElement>;
@@ -14,9 +14,9 @@ export default function PasswordConfirmationInput(inputProps: Props) {
 
   const { passwordConfirmation, setPasswordConfirmation } = usePasswordEntry;
 
-  const onChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirmation(e.currentTarget.value);
-  }, []);
+  };
 
   return (
     <input

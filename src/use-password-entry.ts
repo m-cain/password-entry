@@ -8,8 +8,9 @@ export type UsePasswordEntry = {
   setPasswordConfirmation: (value: string) => void;
   isConfirmed: boolean;
   validations: PasswordValidationCondition[];
-  validate: () => void;
+  validate: (cb?: () => void) => void;
   isValid: boolean;
+  touched: boolean;
 };
 
 export function usePasswordEntry(): UsePasswordEntry {
@@ -20,22 +21,32 @@ export function usePasswordEntry(): UsePasswordEntry {
     []
   );
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [touched, setTouched] = useState(false);
 
-  const setPassword = useCallback((value: string) => {
+  const setPassword = (value: string) => {
     setValue(value);
-  }, []);
+  };
 
-  const setPasswordConfirmation = useCallback((value: string) => {
+  const setPasswordConfirmation = (value: string) => {
     setConfirmValue(value);
-  }, []);
+  };
 
-  const validate = useCallback(() => {
-    const { isValid, validations } = validatePassword(value);
-    setIsValid(isValid);
-    setValidations(validations ?? []);
+  const validate = useCallback(
+    (cb?: () => void) => {
+      const { isValid, validations } = validatePassword(value);
+      const isConfirmed = value === confirmValue;
 
-    setIsConfirmed(value === confirmValue);
-  }, [value, confirmValue]);
+      setIsValid(isValid);
+      setValidations(validations ?? []);
+      setIsConfirmed(isConfirmed);
+      setTouched(true);
+
+      if (cb && isValid && isConfirmed) {
+        cb();
+      }
+    },
+    [value, confirmValue]
+  );
 
   return {
     password: value,
@@ -46,5 +57,6 @@ export function usePasswordEntry(): UsePasswordEntry {
     isConfirmed,
     validate,
     isValid,
+    touched,
   };
 }
