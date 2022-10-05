@@ -21,6 +21,7 @@ yarn build
 ### Running the demo
 
 ```sh
+yarn --cwd example install
 yarn --cwd example dev
 ```
 
