@@ -88,13 +88,13 @@ export function validatePassword(password: string): ValidatePasswordResult {
   const hasMinLength = password.length >= 6;
 
   for (const c of password) {
-    if (isDigit(c)) {
+    if (!hasDigit && isDigit(c)) {
       hasDigit = true;
-    } else if (isSpecialChar(c)) {
+    } else if (!hasSpecialChar && isSpecialChar(c)) {
       hasSpecialChar = true;
-    } else if (isLowercase(c)) {
+    } else if (!hasLowercase && isLowercase(c)) {
       hasLowercase = true;
-    } else if (isUppercase(c)) {
+    } else if (!hasUppercase && isUppercase(c)) {
       hasUppercase = true;
     }
   }
